@@ -17,7 +17,7 @@ const addMarkdownLine = (line) => {
 }
 
 addMarkdownLine(`* 🏗️ I often build [side projects](https://github.com/dayvidwhy?tab=repositories) to further my understanding of software.`)
-addMarkdownLine(`* 📃 I write articles infrequently at [davidyoung.tech](https://david.young.tech).`);
+addMarkdownLine(`* 📃 I write articles infrequently at [davidyoung.tech](https://davidyoung.tech).`);
 addMarkdownLine(`* 🧪 I often create [web experiments](https://codepen.io/dayvidwhy) to try out new platform features.`);
 addMarkdownLine(`* 📚 I also tend to [try out](https://codesandbox.io/u/dayvidwhy) many web frameworks`);
 
