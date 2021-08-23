@@ -1,0 +1,19 @@
+{
+  "name": "dayvidwhy",
+  "version": "1.0.0",
+  "description": "Front page readme generator.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@octokit/core": "^3.5.1"
+  },
+  "engines": {
+    "node": "12.x"
+  },
+  "repository": {
+    "url": "https://github.com/dayvidwhy/shortest"
+  },
+  "license": "MIT"
+}
