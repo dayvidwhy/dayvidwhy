@@ -58,5 +58,5 @@ addMarkdownLine(`* 📚 I also tend to [try out](https://codesandbox.io/u/dayvid
         addMarkdownLine(`* 💻 My current top language is ${langPair[0]} at ${langPair[1]}%.`)
     });
 
-    fs.writeFileSync('./README.md', readmeContents);
+    fs.writeFileSync('./TEST.md', readmeContents);
 })();
