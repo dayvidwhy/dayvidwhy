@@ -47,7 +47,6 @@ addMarkdownLine(`* 📚 I also tend to [try out](https://codesandbox.io/u/dayvid
         })
     });
 
-    // sorts for the most used language
     const langPairs = [];
     Object.keys(totals).forEach((lang) => {
         langPairs.push([lang, ((totals[lang] / lineTotal) * 100).toFixed(2)]);
@@ -59,6 +58,5 @@ addMarkdownLine(`* 📚 I also tend to [try out](https://codesandbox.io/u/dayvid
         addMarkdownLine(`* 💻 My current top language is ${langPair[0]} at ${langPair[1]}%.`)
     });
 
-    // save to our readme file
     fs.writeFileSync('./README.md', readmeContents);
 })();
