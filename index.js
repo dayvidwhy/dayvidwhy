@@ -5,10 +5,14 @@ const octokit = new Octokit();
 const GITHUB_USERNAME = "dayvidwhy";
 
 // stores the text we'll save to the readme file later
-let readmeContents = `## Welcome to my side projects`;
+let readmeContents;
 
 // adds a line prepended with a newline character
 const addMarkdownLine = (line) => {
+    if (readmeContents === undefined) {
+        readmeContents = line;
+        return;
+    }
     readmeContents = readmeContents.concat("\n" + line);
 }
 
