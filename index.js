@@ -8,18 +8,18 @@ const GITHUB_USERNAME = "dayvidwhy";
 let readmeContents;
 
 // adds a line prepended with a newline character
-const addMarkdownLine = (line) => {
+const addMarkdown = (line) => {
     if (readmeContents === undefined) {
         readmeContents = line;
         return;
     }
-    readmeContents = readmeContents.concat("\n" + line);
+    readmeContents = readmeContents.concat(" - " + line);
 }
 
-addMarkdownLine(`* 🏗️ I often build [side projects](https://github.com/dayvidwhy?tab=repositories) to further my understanding of software.`)
-addMarkdownLine(`* 📃 I write articles infrequently at [davidyoung.tech](https://davidyoung.tech).`);
-addMarkdownLine(`* 🧪 I often create [web experiments](https://codepen.io/dayvidwhy) to try out new platform features.`);
-addMarkdownLine(`* 📚 I also tend to [try out](https://codesandbox.io/u/dayvidwhy) many web frameworks`);
+addMarkdown(`[side projects](https://github.com/dayvidwhy?tab=repositories)`)
+addMarkdown(`[my blog](https://davidyoung.tech)`);
+addMarkdown(`[web experiments](https://codepen.io/dayvidwhy)`);
+addMarkdown(`[testing ground](https://codesandbox.io/u/dayvidwhy)`);
 
 (async () => {
     // fetches language stats from github
@@ -55,8 +55,8 @@ addMarkdownLine(`* 📚 I also tend to [try out](https://codesandbox.io/u/dayvid
         return b[1] - a[1]
     });
     langPairs.slice(0, 1).forEach((langPair) => {
-        addMarkdownLine(`* 💻 My current top language is ${langPair[0]} at ${langPair[1]}%.`)
+        addMarkdown(`${langPair[0]} at ${langPair[1]}%`)
     });
 
-    fs.writeFileSync('./TEST.md', readmeContents);
+    fs.writeFileSync('./README.md', readmeContents);
 })();
