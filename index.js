@@ -16,10 +16,10 @@ const addMarkdown = (line) => {
     readmeContents = readmeContents.concat(" - " + line);
 }
 
-addMarkdown(`[side projects](https://github.com/dayvidwhy?tab=repositories)`)
-addMarkdown(`[my blog](https://davidyoung.tech)`);
-addMarkdown(`[web experiments](https://codepen.io/dayvidwhy)`);
-addMarkdown(`[testing ground](https://codesandbox.io/u/dayvidwhy)`);
+addMarkdown(`<a href="https://github.com/dayvidwhy?tab=repositories">side projects</a>`)
+addMarkdown(`<a href="https://davidyoung.tech">my blog</a>`);
+addMarkdown(`<a href="https://codepen.io/dayvidwhy">web experiments</a>`);
+addMarkdown(`<a href="https://codesandbox.io/u/dayvidwhy">testing ground</a>`);
 
 (async () => {
     // fetches language stats from github
@@ -58,5 +58,5 @@ addMarkdown(`[testing ground](https://codesandbox.io/u/dayvidwhy)`);
         addMarkdown(`${langPair[0]} at ${langPair[1]}%`)
     });
 
-    fs.writeFileSync('./README.md', readmeContents);
+    fs.writeFileSync('./README.md', `<p align="center">${readmeContents}</p>`);
 })();
