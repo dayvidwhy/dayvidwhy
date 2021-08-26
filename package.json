@@ -4,7 +4,7 @@
   "description": "Front page readme generator.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "create": "node index.js"
   },
   "dependencies": {
     "@octokit/core": "^3.5.1",

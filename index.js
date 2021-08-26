@@ -3,8 +3,8 @@ const fs = require('fs');
 require('dotenv').config()
 
 const octokit = new Octokit({ auth: process.env.GITHUB_ACCESS_TOKEN });
-const USERNAME= "dayvidwhy";
-const BLOG_URL = "https://davidyoung.tech";
+const USERNAME= process.env.USERNAME;
+const BLOG_URL = process.env.BLOG_URL;
 
 // stores the text we'll save to the readme file later
 let readmeContents;
@@ -18,12 +18,15 @@ const addMarkdown = (line) => {
     readmeContents = readmeContents.concat(" - " + line);
 }
 
+console.log("> Building README");
+
 addMarkdown(`<a href="https://github.com/${USERNAME}?tab=repositories">side projects</a>`)
 addMarkdown(`<a href="${BLOG_URL}">my blog</a>`);
 addMarkdown(`<a href="https://codepen.io/${USERNAME}">web experiments</a>`);
 addMarkdown(`<a href="https://codesandbox.io/u/${USERNAME}">testing ground</a>`);
 
 (async () => {
+    console.log("> Getting GitHub language statistics")
     // fetches language stats from github
     const result = await octokit.request('GET /users/{user}/repos', {
         user: USERNAME
@@ -60,5 +63,7 @@ addMarkdown(`<a href="https://codesandbox.io/u/${USERNAME}">testing ground</a>`)
         addMarkdown(`${langPair[0]} at ${langPair[1]}%`)
     });
 
+    console.log("> Writing language statistics");
     fs.writeFileSync('./README.md', `<p align="center">${readmeContents}</p>`);
+    console.log("> Done");
 })();
