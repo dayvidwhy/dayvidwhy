@@ -1,8 +1,10 @@
 const { Octokit } = require("@octokit/core");
 const fs = require('fs');
+require('dotenv').config()
 
-const octokit = new Octokit();
-const GITHUB_USERNAME = "dayvidwhy";
+const octokit = new Octokit({ auth: process.env.GITHUB_ACCESS_TOKEN });
+const USERNAME= "dayvidwhy";
+const BLOG_URL = "https://davidyoung.tech";
 
 // stores the text we'll save to the readme file later
 let readmeContents;
@@ -16,19 +18,19 @@ const addMarkdown = (line) => {
     readmeContents = readmeContents.concat(" - " + line);
 }
 
-addMarkdown(`<a href="https://github.com/dayvidwhy?tab=repositories">side projects</a>`)
-addMarkdown(`<a href="https://davidyoung.tech">my blog</a>`);
-addMarkdown(`<a href="https://codepen.io/dayvidwhy">web experiments</a>`);
-addMarkdown(`<a href="https://codesandbox.io/u/dayvidwhy">testing ground</a>`);
+addMarkdown(`<a href="https://github.com/${USERNAME}?tab=repositories">side projects</a>`)
+addMarkdown(`<a href="${BLOG_URL}">my blog</a>`);
+addMarkdown(`<a href="https://codepen.io/${USERNAME}">web experiments</a>`);
+addMarkdown(`<a href="https://codesandbox.io/u/${USERNAME}">testing ground</a>`);
 
 (async () => {
     // fetches language stats from github
     const result = await octokit.request('GET /users/{user}/repos', {
-        user: GITHUB_USERNAME
+        user: USERNAME
     });
     const langs = await Promise.all(result.data.map((repo) => (
         octokit.request('GET /repos/{owner}/{repo}/languages', {
-            owner: GITHUB_USERNAME,
+            owner: USERNAME,
             repo: repo.name
         })
     )));
