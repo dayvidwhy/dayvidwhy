@@ -1,22 +1,28 @@
 const { Octokit } = require("@octokit/core");
 const fs = require('fs');
 require('dotenv').config()
-
-// some contants
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
-const USERNAME= process.env.USERNAME;
-const BLOG_URL = process.env.BLOG_URL;
+
+// grabs information about the user associated with the loaded token
+const fetchUserInformation = async () => {
+    const { data: user } = await octokit.request('GET /user');
+
+    return {
+        blog: user.blog,
+        username: user.login
+    };
+};
 
 // Fetches language stats from github
-const fetchRepositoryLanguageTotals = async () => {
+const fetchRepositoryLanguageTotals = async (username) => {
     const result = await octokit.request('GET /users/{user}/repos', {
-        user: USERNAME
+        user: username
     });
 
     // languages returns how man bytes of each language file
     const repositoryLanguages = await Promise.all(result.data.map((repo) => (
         octokit.request('GET /repos/{owner}/{repo}/languages', {
-            owner: USERNAME,
+            owner: username,
             repo: repo.name
         })
     )));
@@ -41,10 +47,8 @@ const fetchRepositoryLanguageTotals = async () => {
 };
 
 (async () => {
-    // stores the text we'll save to the readme file later
+    // builds our content for the readme file
     let readmeContents;
-
-    // adds a line prepended with a newline character
     const addMarkdown = (line) => {
         if (readmeContents === undefined) {
             readmeContents = line;
@@ -54,7 +58,8 @@ const fetchRepositoryLanguageTotals = async () => {
     }
 
     console.log("> Getting GitHub language statistics");
-    const { totals, byteTotal } = await fetchRepositoryLanguageTotals();
+    const { username, blog } = await fetchUserInformation();
+    const { totals, byteTotal } = await fetchRepositoryLanguageTotals(username);
 
     // grab the largest language in bytes
     let largestBytes = 0;
@@ -66,10 +71,10 @@ const fetchRepositoryLanguageTotals = async () => {
         }
     });
 
-    addMarkdown(`<a href="https://github.com/${USERNAME}?tab=repositories">side projects</a>`)
-    addMarkdown(`<a href="${BLOG_URL}">my blog</a>`);
-    addMarkdown(`<a href="https://codepen.io/${USERNAME}">web experiments</a>`);
-    addMarkdown(`<a href="https://codesandbox.io/u/${USERNAME}">testing ground</a>`);
+    addMarkdown(`<a href="https://github.com/${username}?tab=repositories">side projects</a>`)
+    addMarkdown(`<a href="${blog}">my blog</a>`);
+    addMarkdown(`<a href="https://codepen.io/${username}">web experiments</a>`);
+    addMarkdown(`<a href="https://codesandbox.io/u/${username}">testing ground</a>`);
     addMarkdown(`${largestLanguage} at ${((largestBytes / byteTotal) * 100).toFixed(2)}%`);
     
     console.log("> Writing language statistics");
