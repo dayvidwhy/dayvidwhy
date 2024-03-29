@@ -2,12 +2,12 @@ import { Octokit } from "@octokit/core";
 import fs from "fs";
 import dotenv from "dotenv";
 
-dotenv.config()
+dotenv.config();
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 // grabs information about the user associated with the loaded token
 const fetchUserInformation = async () => {
-    const { data: user } = await octokit.request('GET /user');
+    const { data: user } = await octokit.request("GET /user");
 
     return {
         blog: user.blog,
@@ -17,13 +17,13 @@ const fetchUserInformation = async () => {
 
 // Fetches language stats from github
 const fetchRepositoryLanguageTotals = async (username) => {
-    const result = await octokit.request('GET /users/{user}/repos', {
+    const result = await octokit.request("GET /users/{user}/repos", {
         user: username
     });
 
     // languages returns how man bytes of each language file
     const repositoryLanguages = await Promise.all(result.data.map((repo) => (
-        octokit.request('GET /repos/{owner}/{repo}/languages', {
+        octokit.request("GET /repos/{owner}/{repo}/languages", {
             owner: username,
             repo: repo.name
         })
@@ -38,8 +38,8 @@ const fetchRepositoryLanguageTotals = async (username) => {
                 totals[key] = 0;
             }
             totals[key] += data[key];
-            byteTotal += data[key]
-        })
+            byteTotal += data[key];
+        });
     });
 
     return {
@@ -57,7 +57,7 @@ const fetchRepositoryLanguageTotals = async (username) => {
             return;
         }
         readmeContents = readmeContents.concat(" - " + line);
-    }
+    };
 
     console.log("> Getting GitHub language statistics");
     const { username, blog } = await fetchUserInformation();
@@ -73,13 +73,13 @@ const fetchRepositoryLanguageTotals = async (username) => {
         }
     });
 
-    addMarkdown(`<a href="https://github.com/${username}?tab=repositories">side projects</a>`)
+    addMarkdown(`<a href="https://github.com/${username}?tab=repositories">side projects</a>`);
     addMarkdown(`<a href="${blog}">my blog</a>`);
     addMarkdown(`<a href="https://codepen.io/${username}">web experiments</a>`);
     addMarkdown(`<a href="https://codesandbox.io/u/${username}">testing ground</a>`);
     addMarkdown(`${largestLanguage} at ${((largestBytes / byteTotal) * 100).toFixed(2)}%`);
     
     console.log("> Writing language statistics");
-    fs.writeFileSync('./README.md', `<p align="center">${readmeContents}</p>`);
+    fs.writeFileSync("./README.md", `<p align="center">${readmeContents}</p>`);
     console.log("> Done");
 })();
