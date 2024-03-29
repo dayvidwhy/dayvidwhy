@@ -1,6 +1,8 @@
-const { Octokit } = require("@octokit/core");
-const fs = require('fs');
-require('dotenv').config()
+import { Octokit } from "@octokit/core";
+import fs from "fs";
+import dotenv from "dotenv";
+
+dotenv.config()
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
 // grabs information about the user associated with the loaded token
