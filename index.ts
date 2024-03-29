@@ -5,18 +5,32 @@ import dotenv from "dotenv";
 dotenv.config();
 const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN });
 
-// grabs information about the user associated with the loaded token
-const fetchUserInformation = async () => {
-    const { data: user } = await octokit.request("GET /user");
+interface UserInformation {
+    blog: string;
+    username: string;
+}
 
+/**
+ * Grabs information about the user associated with the loaded token.
+ * @returns UserInformation
+ */
+const fetchUserInformation = async (): Promise<UserInformation> => {
+    const { data: user } = await octokit.request("GET /user");
     return {
         blog: user.blog,
         username: user.login
     };
 };
 
-// Fetches language stats from github
-const fetchRepositoryLanguageTotals = async (username) => {
+/**
+ * Fetches language stats from github.
+ * @param username Username of user to request stats for.
+ * @returns 
+ */
+const fetchRepositoryLanguageTotals = async (username): Promise<{
+    totals: Record<string, number>,
+    byteTotal: number
+}> => {
     const result = await octokit.request("GET /users/{user}/repos", {
         user: username
     });
@@ -48,15 +62,18 @@ const fetchRepositoryLanguageTotals = async (username) => {
     };
 };
 
-(async () => {
+/**
+ * Initiate script to fetch current language stats from github.
+ */
+(async (): Promise<void> => {
     // builds our content for the readme file
-    let readmeContents;
-    const addMarkdown = (line) => {
-        if (readmeContents === undefined) {
-            readmeContents = line;
-            return;
-        }
-        readmeContents = readmeContents.concat(" - " + line);
+    let readmeContents: string = "";
+    const addMarkdown = (line: string) => {
+        readmeContents = readmeContents.concat(line);
+    };
+
+    const addLink = (url: string, content: string) => {
+        readmeContents = readmeContents.concat(`<a href="${url}">${content}</a>`);
     };
 
     console.log("> Getting GitHub language statistics");
@@ -64,8 +81,8 @@ const fetchRepositoryLanguageTotals = async (username) => {
     const { totals, byteTotal } = await fetchRepositoryLanguageTotals(username);
 
     // grab the largest language in bytes
-    let largestBytes = 0;
-    let largestLanguage;
+    let largestBytes: number = 0;
+    let largestLanguage: string;
     Object.keys(totals).forEach((language) => {
         if (totals[language] > largestBytes) {
             largestBytes = totals[language];
@@ -73,10 +90,14 @@ const fetchRepositoryLanguageTotals = async (username) => {
         }
     });
 
-    addMarkdown(`<a href="https://github.com/${username}?tab=repositories">side projects</a>`);
-    addMarkdown(`<a href="${blog}">my blog</a>`);
-    addMarkdown(`<a href="https://codepen.io/${username}">web experiments</a>`);
-    addMarkdown(`<a href="https://codesandbox.io/u/${username}">testing ground</a>`);
+    addLink(`https://github.com/${username}?tab=repositories`, "side projects");
+    addMarkdown(" - ");
+    addLink(blog, "my blog");
+    addMarkdown(" - ");
+    addLink(`https://codepen.io/${username}`, "web experiments");
+    addMarkdown(" - ");
+    addLink(`https://codesandbox.io/u/${username}`, "testing ground");
+    addMarkdown(" - ");
     addMarkdown(`${largestLanguage} at ${((largestBytes / byteTotal) * 100).toFixed(2)}%`);
     
     console.log("> Writing language statistics");
